@@ -8,11 +8,10 @@ from paho.mqtt import client as mqtt_client
 
 broker = 'broker.emqx.io'
 port = 1883
-topic = "python/mqtt"
-# generate client ID with pub prefix randomly
+topic = "parkAssistant/vagas"
+
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
-# username = 'emqx'
-# password = 'public'
+
 
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
@@ -26,15 +25,27 @@ def connect_mqtt():
     client.on_connect = on_connect
     client.connect(broker, port)
     return client
+    
 
-
+def clear_retained(retained): #accepts single topic or list
+    msg=""
+    if isinstance(retained[0],str):
+        client.publish(retained[0],msg,qos=QOS0,retain=RETAIN)
+    else:
+        try:
+            for t in retained:
+                client.publish(t[0],msg,qos=QOS0,retain=RETAIN)
+                print ("Clearing retaind on ",msg,"topic -",t[0]," qos=",QOS0," retain=",RETAIN)
+        except:
+            Print("problems with topic")
+            return -1
 def publish(client):
     msg_count = 0
     while True:
         time.sleep(1)
-        msg = f"Dale teste: {msg_count}"
+        msg = f"teste: {msg_count}"
         result = client.publish(topic, msg)
-        # result: [0, 1]
+
         status = result[0]
         if status == 0:
             print(f"Send `{msg}` to topic `{topic}`")
