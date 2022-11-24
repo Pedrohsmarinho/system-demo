@@ -4,7 +4,14 @@ import random
 import time
 
 from paho.mqtt import client as mqtt_client
+from datetime import date
+from datetime import datetime
 
+currentDate = date.today()
+currentTime = datetime.now()
+
+dateInText = '{}/{}/{}'.format(currentDate.day, currentDate.month,currentDate.year)
+updateTime = currentTime.strftime('%H:%M')
 
 broker = 'broker.emqx.io'
 port = 1883
@@ -27,27 +34,64 @@ def connect_mqtt():
     client.connect(broker, port)
     return client
 
-
-def publish(client):
-    msg_count = 0
-    while True:
+dadosSobreAsVagas = [
+    {
+        "id": 1,
+        "situacao": "ocupada",
+        "dataDaUltimaAtualizacao":  dateInText,
+        "horaDaUltimaAtualizacao":  updateTime
+    },
+    {
+        "id": 2,
+        "situacao": "livre",
+        "dataDaUltimaAtualizacao":  dateInText,
+        "horaDaUltimaAtualizacao":  updateTime
+    },   
+    {
+        "id": 3,
+        "situacao": "livre",
+        "dataDaUltimaAtualizacao":  dateInText,
+        "horaDaUltimaAtualizacao":  updateTime    
+    },    
+    {
+        "id": 4,
+        "situacao": "livre",
+        "dataDaUltimaAtualizacao":  dateInText,
+        "horaDaUltimaAtualizacao":  updateTime    
+    },    
+    {
+        "id": 5,
+        "situacao": "ocupada",
+        "dataDaUltimaAtualizacao":  dateInText,
+        "horaDaUltimaAtualizacao":  updateTime    
+    }
+]
+        
+def publish(client):    
+      while True:
+        numeroVaga = 0
         time.sleep(1)
-        msg = f"Dale teste: {msg_count}"
-        result = client.publish(topic, msg)
-        # result: [0, 1]
+        
+        result = client.publish(topic, f"{dadosSobreAsVagas}")
         status = result[0]
         if status == 0:
-            print(f"Send `{msg}` to topic `{topic}`")
-        else:
-            print(f"Failed to send message to topic {topic}")
-        msg_count += 1
+           print(dadosSobreAsVagas)
+           idSelect =  int(input("Digite a vaga que deseja alterar: "))
 
+           if(idSelect):
+            print("    ")
+            print("    ")
+            print("    ")
+            dadosSobreAsVagas[idSelect-1]["situacao"] = "ocupada"
+                
+        else:
+            print(f"Falhou ao enviar mensagem para o topico {topic}")
+        numeroVaga += 1
 
 def run():
     client = connect_mqtt()
     client.loop_start()
     publish(client)
-
 
 if __name__ == '__main__':
     run()
