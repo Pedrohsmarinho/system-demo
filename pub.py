@@ -101,16 +101,22 @@ def publish(client):
            if(idSelect):
             print("    ")
             
-            print("Situação atual da vaga: " + dadosSobreAsVagas[idSelect-1]["situacao"])
-            print("Deseja alterar o status desta vaga?")
-            print("1 - Sim / 2 - Não ")
-            idSelectStatus =  int(input())
+            if idSelect <= totalParkingSpaces:
+                print("Situação atual da vaga: " + dadosSobreAsVagas[idSelect-1]["situacao"])
+                print("Deseja alterar o status desta vaga?")
+                print("1 - Sim / 2 - Não ")
+                idSelectStatus =  int(input())
+            else:
+                print("Vaga indisponivel no momento!!!")
 
-            if idSelectStatus == 1:
-                if  dadosSobreAsVagas[idSelect-1]["situacao"] == "ocupada":
-                    dadosSobreAsVagas[idSelect-1]["situacao"] = "livre"
+            if idSelectStatus == 1 and not(idSelect > totalParkingSpaces):
+                if idSelect <= totalParkingSpaces:
+                    if  dadosSobreAsVagas[idSelect-1]["situacao"] == "ocupada":
+                        dadosSobreAsVagas[idSelect-1]["situacao"] = "livre"
+                    else:
+                        dadosSobreAsVagas[idSelect-1]["situacao"] = "ocupada"
                 else:
-                    dadosSobreAsVagas[idSelect-1]["situacao"] = "ocupada"
+                    print("Vaga indisponivel no momento!!!")
 
         else:
             print(f"Falhou ao enviar mensagem para o topico {topic}")
