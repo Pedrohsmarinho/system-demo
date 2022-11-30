@@ -6,6 +6,9 @@ import time
 from paho.mqtt import client as mqtt_client
 from datetime import date
 from datetime import datetime
+import random
+
+numberPub = random.randint(1,52)
 
 currentDate = date.today()
 currentTime = datetime.now()
@@ -38,39 +41,11 @@ def connect_mqtt():
 
 dadosSobreAsVagas = [
     {
-        "id": 1,
+        "id": numberPub,
         "situacao": "ocupada",
         "dataDaUltimaAtualizacao":  dateInText,
         "horaDaUltimaAtualizacao":  updateTime,
         "localizacao": "shopping north way"
-    },
-    {
-        "id": 2,
-        "situacao": "livre",
-        "dataDaUltimaAtualizacao":  dateInText,
-        "horaDaUltimaAtualizacao":  updateTime,
-        "localizacao": "shopping north way"
-    },   
-    {
-        "id": 3,
-        "situacao": "livre",
-        "dataDaUltimaAtualizacao":  dateInText,
-        "horaDaUltimaAtualizacao":  updateTime,
-        "localizacao": "shopping north way"
-    },    
-    {
-        "id": 4,
-        "situacao": "livre",
-        "dataDaUltimaAtualizacao":  dateInText,
-        "horaDaUltimaAtualizacao":  updateTime,
-        "localizacao": "shopping north way"   
-    },    
-    {
-        "id": 5,
-        "situacao": "ocupada",
-        "dataDaUltimaAtualizacao":  dateInText,
-        "horaDaUltimaAtualizacao":  updateTime,
-        "localizacao": "shopping north way"    
     }
 ]
         
@@ -101,20 +76,21 @@ def publish(client):
            if(idSelect):
             print("    ")
             
-            if idSelect <= totalParkingSpaces:
-                print("Situação atual da vaga: " + dadosSobreAsVagas[idSelect-1]["situacao"])
+            idSelectStatus = 0
+            if idSelect == dadosSobreAsVagas[0]["id"]:
+                print("Situação atual da vaga: " + dadosSobreAsVagas[0]["situacao"])
                 print("Deseja alterar o status desta vaga?")
                 print("1 - Sim / 2 - Não ")
                 idSelectStatus =  int(input())
             else:
-                print("Vaga indisponivel no momento!!!")
+                print("Vaga indisponivel no momento 1!!!")
 
-            if idSelectStatus == 1 and not(idSelect > totalParkingSpaces):
-                if idSelect <= totalParkingSpaces:
-                    if  dadosSobreAsVagas[idSelect-1]["situacao"] == "ocupada":
-                        dadosSobreAsVagas[idSelect-1]["situacao"] = "livre"
+            if idSelectStatus == 1:
+                if idSelect:
+                    if  dadosSobreAsVagas[0]["situacao"] == "ocupada":
+                        dadosSobreAsVagas[0]["situacao"] = "livre"
                     else:
-                        dadosSobreAsVagas[idSelect-1]["situacao"] = "ocupada"
+                        dadosSobreAsVagas[0]["situacao"] = "ocupada"
                 else:
                     print("Vaga indisponivel no momento!!!")
 
